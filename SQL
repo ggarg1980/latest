@@ -1,0 +1,148 @@
+####################################################################################################
+table tabPerson(id, name, email, genderid, age, city)
+
+select * from tabperson;
+select distinct name, city from tableperson; //fetches unique rows combining both name and city
+select * from tabperson where city!='London'
+
+Operators (=, !=, >, >=, <, <=, IN, BETWEEN, LIKE, NOT, )
+
+select * from where email not like '%@%' //% and _ are wild cards
+select * from tblperson where age between 20 and 25
+
+select * from tabperson order by name desc, age asc
+
+##### select top 2 * from tblperson #### gives top two records of the table 
+##### select top 5 percent * from tblperson #### gives top 5% records of the table #####
+
+Find the person with max age-> one way is to use max and another one is as below
+
+##### select * from tblperson order by age desc 
+        -> Gives age descending now
+##### select top 1 * from tblperson order by age desc
+
+#########################################Group By ###########################################################
+Group by clause is used with aggregate functions (SUM, AVG, MIN, MAX, COUNT)
+
+select SUM(salary) from tblEmployee;
+select MIN(salary) from tblEmployee;
+select MAX(salary) from tblEmployee;
+
+1   Tom M 4000 London
+2   Ram M 6000 NY
+3   Rho F 2000 Sydney
+4   Kin F 8000 London
+5   Vom M 5000 NY
+6   Vic F 4000 Sydney
+
+Find total salary by city
+########### select city, sum(salary) as TotalSalary from tblEmployee group by city;
+MULTIPLE AGG FUNTIONS#######################
+select city, gender, SUM(salary) as totalsalary, COUNT(id) 
+    from tblEmployee 
+    group by city, gender order by city;
+    
+ ### select city, sum(salary) as TotalSalary from tblEmployee where city='LONDON' group by city;
+ Here filteration is done before hand - WHERE Clause and then aggreation happens
+ 
+ 
+ ### select city, sum(salary) as TotalSalary from tblEmployee group by city having city ='LONDON';
+ Here first aggregation is done and later on FILTRATION is done expensive
+ 
+ #####IMPORTANT########
+ You can having aggregate functions with HAVING clause but NOT with WHERE clause
+ 
+ ERRROR #### select * from employee where sum(salary)>4000
+ 
+ select city, gender, SUM(salary) as totalsalary, COUNT(id) 
+    from tblEmployee 
+    group by city, gender Having SUM(Salary)>4000
+    
+ ####################################################################################
+ 0. INNER JOIN
+ 1. LEFT JOIN
+ 2. RIGHT JOIN
+ 3. FULL JOIN
+ 
+SELECT name, gender, salary, departmentname
+FROM tblEmployee
+INNER JOIN tblDEPARTMENT
+ON tblEmployee.departmentid = tblDepartment.id
+
+SELECT name, gender, salary, departmentname
+FROM tblEmployee
+LEFT JOIN tblDEPARTMENT
+ON tblEmployee.departmentid = tblDepartment.id
+
+
+SELECT name, gender, salary, departmentname
+FROM tblEmployee
+RIGHT JOIN tblDEPARTMENT
+ON tblEmployee.departmentid = tblDepartment.id
+
+
+SELECT name, gender, salary, departmentname
+FROM tblEmployee
+FULL JOIN tblDEPARTMENT
+ON tblEmployee.departmentid = tblDepartment.id
+
+SELECT        coloumnlist
+FROM          LeftTable
+JOINTYPE      RightTable
+ON            JoinCondition
+
+ ######################################ADVANCED JOINS##############################################
+IN THE ABOVE JOINS WE ALWAYS HAVE COMMON PART + ADDTIONAL PART - NOW WHAT IF WE ONLY HAVE TO SEE DIFFERENCE 
+
+SELECT name, gender, salary, departmentname
+FROM tblEmployee
+LEFT JOIN tblDEPARTMENT
+ON tblEmployee.departmentid = tblDepartment.id
+WHERE tblEmployee.departmentid IS NULL     ////// or -> WHERE tblDepartment.id IS NULL  
+
+Simarlarly the other queries can be written in same way
+ ######################################CTE (Common table Expressoin) ##############################################
+ WITH EmployeeCount(DepartmentId, TotalEmployees) AS
+ (
+       SELECT DepartmentId, count(*) as TotalEmployees from tblEmployee group by DepartmentId
+ )
+ SELECT DeptName, TotalEmployees From tbhDeparment 
+ INNER JOIN EmployeeCount
+ ON tbhDepartment.id = EmployeeCount.DepartmentId
+ order by TotalEmployees
+ 
+ ALSO multiple CTEs are possible with one "WITH CLAUSE"
+ for example
+ WITH CTE1() AS
+ (
+ ), CTE2() AS
+ ()
+ SELECT* XXXXXXXXXX
+ 
+ =========================RECURSIVE CTES======================================
+ Sample query on the employees table:
+SELECT employee_id, last_name, manager_id, LEVEL
+   FROM employees
+   CONNECT BY PRIOR employee_id = manager_id;
+ 
+
+
+
+1. Find Nth highest salary in SQL
+//OPTION#1
+SELECT TOP 1 salary FROM                                     //PICK TOP ROW
+(SELECT DISTINCT TOP 2 salary FROM employee ORDER BY DESC)  //GET Nth top rows
+results ORDER BY salary                                     //SORT THEM
+
+//OPTION#2
+WITH results AS
+(
+    SELECT salary, DENSE_RANK over (order by salary desc) as denserank
+)
+SELECT TOP 1 salary FROM results WHERE results.denserank = 2
+
+2. SQL query to get organziation hierarcy
+
+
+
+

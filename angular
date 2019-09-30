@@ -1,0 +1,287 @@
+=================================== ES6/ECMAScript 6 ================================================
+-- This is created to standardized JavaScript. This is the specification and javascript is the implemnation 
+    --Blocked scoped variables
+        - Old way to use -> 'var'
+        - New way -> 'let'
+        - New way -> 'const'
+    -- Class
+        class People
+        {
+            constructor()
+            {This is constructor}
+            listPerson()
+            {This is method}
+        }
+    -- Arrow functions
+       old way --> var name = function (){}
+       new way --> var name = ()=>{}
+    -- Templates
+       `Back Quote
+       Old way 
+              var name = 'Edwin'
+              var age = 30
+              console.log(name +'s age is ' + age);
+       New way
+              let name = 'Edwin'
+              let age = 30
+              console.log (`${name}'s age is ${age}`)
+    -- Desctructing
+    -- Modules
+        Modules in ES6 are files that allows code and data to be isolated, it helps in organizing the grouping of code logically
+        They are also called packages or libraries
+        export constant Name = 'Edwin'
+        
+        import Name from './someFile';
+=================================== TypeScript ================================================
+TypeScript is superset of JavaScript means a wrapper or layer with more features. We have file.ts its being compiled by complier 
+into JavaScript
+
+Features
+        - Types
+            let name: string; //example
+            let isDone: boolean;
+            let posts: number[] = [1,2,3];
+            let notsure: any ='Hi 78';
+            number, string[], boolean, string, any
+        - Interfaces
+            With interfaces we can define how our data or functionalities should be modeled
+            interface Post{
+                title: string;
+            }
+        - Decorators
+            Decorators are functionsl that are invoked with prefixed @Symbol for example @Component
+            They return the same things that was passed in but modify the data in some way
+            We can decorate, Classes, Methods, Properties and Parameters
+            
+ 
+Plus all the ES6 features like clases, arrows functions, modules, block scoped variables
+=================================== Info ================================================
+-- package.json - Basic information and list of dependencies that are required to run the project. This is done by CLI.
+-- TypeScript gets compiled into JavaScript
+-- @ declarative -> LIke @Component is declartive
+-- main.ts - This is incharge of bootstraping whole application
+              In this AppModule is being imported and then passing it to bootstrapModule(AppModule)
+
+-- index.html -> This is the starting body
+<body>
+    <app-root></app-root> // This app-root is defined app.component.ts (@Component -> selector:'app-root')
+</body>
+
+-- We write the code in the components (ts stands for TypeScript)
+    a) app.components.ts [THIS IS THE CLASS where we write elements, objects etc and it talks with HTML the view layer]
+                         - Constructutor are used to inject dependencies from other modules
+                         - ngOnInit - These are the methods lifeCycle 
+    b) app.components.html [This is the view layer]
+    c) app.components.css [This is the CSS file]
+    d) app.module.ts - Module wraps everything and module is being bootstraped via (main.ts)
+                       All the components needs to be registed to this AppModule as its being bootstrapped
+                       (import it and then registed under @NgModule)
+                       Inside this we also tell which component is the bootstrap component like bootstrap:[AppComponent]
+    e) app.components.spec.ts [This is testing file]
+    
+    Modules -> Components -> Selector/Template/CSS
+    
+-- String Interpolation -> In the HTML (View) we show the data as {{ name }}  - This name is defined in the component
+-- Tertary operation -> {{city ? city:'No City'}}
+-- Property Binding
+                  Active <input type="radio" id="status" [checked]="status">
+                  using [] -> This is being binded with variable 'status' defined in component module
+-- Event Binding
+                <button (click)="greetPerson()">Click</button>
+                <div style="height: 200px; width: 200px;border: 1px solid" (mouseover)="greetPerson()"></div>
+         
+-- Two way binding: If you change something in the front-hand it changes in backhand and vice-versa
+                <input [(ngModel)]="lastName" type="text" id="lastName">            
+                
+-- Directives
+    a) *ngIf 
+        <div *ngIf="status; else NOTACTIVE"> Showing {{status}} </div>
+        <ng-template #NOTACTIVE>
+                  Showing NOT ACTIVE
+        </ng-template>
+    b)  *ngFor
+        <ul>
+                <li *ngFor="let post of posts; let i=index">{{i}} {{post.title}}</li>
+        </ul>
+    c) Styling directive
+       <div [ngStyle]="{color: status ? 'green' : 'red'}"> {{firstName}} </div>
+    d) Class directive
+        <div [ngClass]="{isActive: status}"> Last Name {{lastName}} </div>
+  ------------ Creating HTML forms start-----------------
+    <form>
+        <div class="form-group">
+            <label for="username">Username</label>
+            <input type="text" placeholder="Enter UserName" class="form-control" id="username">
+        </div>
+        <div class="form-group">
+            <label for="password">Password</label>
+            <input type="text" placeholder="Enter Password" class="form-control" id="password">
+        </div>
+        <button class="btn btn-primary" type="submit">Submit</button>
+    </form>
+    ------------ Creating HTML forms end-----------------
+    
+    <h2>{{hero.name | uppercase}} Details</h2>
+    The word uppercase in the interpolation binding, right after the pipe operator ( | ), activates the built-in UppercasePipe.
+    
+    
+    https://www.youtube.com/watch?v=khq0p10uBaI
+    
+Q: when rendering the page for the first time in angular, which file is called first?
+Ans: main.ts it has details around the module that is being bootstraped platformBrowserDynamic().bootstrapModule(AppModule)
+
+Q: What changes needs to be done in app.module.ts file if we create a component/directive manully?
+Ans: In the NgModule we import Modules and declare components
+
+Q: Different type of decorators
+Class Decorators: NgModule, Component, Directive
+Property Decorators: Input, Output
+Method Decorators: HostListener, HostBinding
+Parameter Decorators: Inject
+
+@: What are mandatory objects that must be defined in component decorator?
+Selector
+TemplateURL
+StyleURL
+
+@ What are differnt type of component selectors?
+Element selector -> selector:'app-port'  -> <app-port></app-port>
+Class selector -> '.app-port' -> <div class="app-port"></div>
+Attribute selector -> '[app-port]' -> <div app-port></div>
+    
+Q what is data binding?
+Its communcation between component file and the view html file.
+
+Q Differnt types of data binding?
+-> String Interpolation using {{}}
+-> Property binding <input type="radio" id="status" [checked]="status">
+-> Event binding <button (click)="greetPerson()">Click</button>
+-> Two way data binding using ngModel <input [(ngModel)]="lastName" type="text" id="lastName">
+
+@ What are differnt directives available in Angular
+-> Structural directives (ngIf & ngFor) 
+-> Attibute directives (ngStyle & ngClass)
+
+@Data passing between components 
+-> <app-hero-detail [hero]="selectedHero"></app-hero-detail>
+-> @Input() hero: Hero;
+It's a one way data binding from the selectedHero property of the HeroesComponent
+to the hero property of the target element, which maps to the hero property of the HeroDetailComponent.
+
+@Service
+Components shouldn't fetch or save data directly and they certainly shouldn't knowingly present fake data. 
+They should focus on presenting data and delegate data access to a service
+In this tutorial, you'll create a HeroService that all application classes can use to get heroes.
+Instead of creating that service with new, you'll rely on Angular dependency injection to inject it into 
+the HeroesComponent constructor.@Injectable() services
+Notice that the new service imports the Angular Injectable symbol and annotates the class with the @Injectable() decorator.
+This marks the class as one that participates in the dependency injection system. 
+The HeroService class is going to provide an injectable service, and it can also have its own injected dependencies. 
+It doesn't have any dependencies yet, but it will soon
+Services are a great way to share information among classes that don't know each other
+
+@Constructor & ngOnInit
+Reserve the constructor for simple initialization such as wiring constructor parameters to properties. 
+The constructor shouldn't do anything. 
+It certainly shouldn't call a function that makes HTTP requests to a remote server as a real data service would.
+
+@Observable data
+Observable is one of the key classes in the RxJS library.
+HeroService.getHeroes() must have an asynchronous signature of some kind.
+It can take a callback. It could return a Promise. It could return an Observable.
+In this tutorial, HeroService.getHeroes() will return an Observable in part because it will 
+eventually use the Angular HttpClient.get method to fetch the heroes and HttpClient.get() returns an Observable
+//Actual method defination 
+import { Observable, of } from 'rxjs';
+getHeroes(): Observable<Hero[]> {
+  return of(HEROES);
+}
+//Caller 
+getHeroes(): void {
+  this.heroService.getHeroes()
+      .subscribe(heroes => this.heroes = heroes);
+}
+The new version waits for the Observable to emit the array of heroes— which could happen now or several minutes from now. 
+Then subscribe passes the emitted array to the callback, which sets the component's heroes property.
+
+@AppRoutingModule
+An Angular best practice is to load and configure the router in a separate, top-level module that is dedicated to routing
+and imported by the root AppModule.
+Add routes
+Routes tell the router which view to display when a user clicks a link or pastes a URL into the browser address bar.
+A typical Angular Route has two properties:
+path: a string that matches the URL in the browser address bar.
+component: the component that the router should create when navigating to this route.
+You intend to navigate to the HeroesComponent when the URL is something like localhost:4200/heroes.
+Import the HeroesComponent so you can reference it in a Route. Then define an array of routes with a single route to that component.
+        const routes: Routes = [
+          { path: 'heroes', component: HeroesComponent }
+        ];
+        @NgModule({
+          imports: [ RouterModule.forRoot(routes) ],
+          exports: [ RouterModule ]
+        })
+        export class AppRoutingModule {}
+
+<h1>{{title}}</h1>
+<nav>
+  <a routerLink="/heroes">Heroes</a>
+</nav>
+<router-outlet></router-outlet>
+<app-messages></app-messages>
+
+A routerLink attribute is set to "/heroes", the string that the router matches to the route to HeroesComponent. 
+The routerLink is the selector for the RouterLink directive that turns user clicks into router navigations. 
+It's another of the public directives in the RouterModule.
+
+You removed <app-heroes> because you will only display the HeroesComponent when the user navigates to it.
+The <router-outlet> tells the router where to display routed views.
+constructor(
+    private route: ActivatedRoute,
+    private heroService: HeroService,
+    private location: Location
+  ) {}
+  
+The ActivatedRoute holds information about the route to this instance of the HeroDetailComponent. 
+This component is interested in the route's bag of parameters extracted from the URL. 
+The "id" parameter is the id of the hero to display.
+
+The HeroService gets hero data from the remote server and this component will use it to get the hero-to-display.
+
+The location is an Angular service for interacting with the browser. 
+You'll use it later to navigate back to the view that navigated here
+
+@HttpClient
+HttpClient is Angular's mechanism for communicating with a remote server over HTTP.
+
+
+https://www.greycampus.com/blog/programming/top-30-interview-questions-and-answers-on-angular-5
+
+=================================== Commands ================================================
+-- https://github.com/angular/angular-cli
+npm install -g @angular/cli
+ng new angular-tour-of-heroes
+cd angular-tour-of-heroes
+ng serve --open  [The --open flag opens a browser to http://localhost:4200/]
+ng generate component heroes
+ng generate component hero-detail
+ng generate service hero
+ng generate component messages
+ng generate module app-routing --flat --module=app
+
+--flat puts the file in src/app instead of its own folder.
+--module=app tells the CLI to register it in the imports array of the AppModule
+
+
+ng new demo -----> (Creation of new project name called demo)
+ng serve ----> (Go inside the project and this command will server)
+ng build --> To build the application (DIST folder is created)
+ng g c example (creation of generate component named 'example')
+npm install bootstrap (installing bootstrap)
+    ---> Configuring it into angular.json --> 
+        "styles": [
+            "src/styles.css",
+             "node_modules/bootstrap/dist/css/bootstrap.css"
+             ]
+
+

@@ -1,0 +1,142 @@
+'''
+Map requests by
+- URI patterns
+- Request parametes and parameter conditions
+- Request headers
+- Media Types
+
+Sample-0 - @GetMapping(path="quoteRequests", params="eventType") -> Only eventType attribute is present
+Sample-1 @GetMapping(path="quoteRequests", params="!eventType") -> Negative eventType shouldnt be present
+Sample-2 @GetMapping(path="quoteRequests", params="eventType=weddings") -> eventType with weddings value
+public String listRequests()
+{
+   return "quoteRequestList";
+}
+
+Method input signatures
+- Empty (no args)
+- @PathVariable
+- @RequestParam
+- @ModelAttributes
+- 25+ total Spring provided input signatures
+
+//Below object returns Model and View object 
+@GetMapping("/quoteRequest/{quoteId}")
+public ModelAndView viewQuoteRequest(@PathVariable int quoteId)
+{
+   QuoteRequest quoteRequestBean = new QuoteRequst();
+   quoteRequestBean.setBudget(5000);
+   qoteRequestBean.setEventType("wedding");
+   
+   ModelAndView mav = new ModelAndView();
+   mav.addObject("quoteRequestBean",quoteRequestBean);
+   mav.setViewName("quoteRequestDetail");
+   return mav;
+}
+
+//Example of a redirect between controllers
+@GetMapping("/quoteRequest/social/{id}")
+public String viewRequsetSocial(@PathVariable int id)
+{
+   String returnViewName ="quoteRequestSocialEventDetail";   
+   boolean somecondition = true;
+   if(somecondition)
+   {
+       returnViewName = "redirect:/quoteRequest/wedding/{id}"
+   }
+   
+   return returnViewName;
+   
+}
+
+//This is API response no GUI back
+@GetMapping
+@ResponseBody -> Spring will take care of sending JSON object
+public QuoteRequest viewQuoteRequestApi()
+{
+   QuoteRequest quoteRequestBean = new QuoteRequst();
+   quoteRequestBean.setBudget(5000);
+   qoteRequestBean.setEventType("LWD");
+   
+  return quoteRequestBean;
+}
+
+M -> Model usually a Pojo
+
+=====Model Methods=====
+- Controller can have many model methods
+- Have flexiable method signatures 
+- Always invoked before @RequestMapping methods in the same contorller (###########)
+
+@ModelAttribute
+public void addCommonAttributes(@RequestParam String eventType, Model model)
+{
+   String customMessage = "you are viewing requests for "+eventType;
+   model.addAttribute("eventTypeMessage",customMessage);
+}
+
+=====Binder Methods (Init Binders)=====
+Manipulation using Init Binders
+- Request parameter data
+- URI variables
+- Form beans (model objects)
+
+@InitBinder
+public void initBinder(WebDataBinder binder)
+{
+  SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+  dateFormat.setLenient(false);
+
+binder.registerCustomerEditor(Date.class, new CustomDateEditor(dateaFormat, false));
+}
+- Added a date formatter for manipulating dates on certain objects
+- Specified a value attribute on the @InitBinder annotation so that formatting happens for Specific model objects
+
+--> Model Methods and Init Binders they operate on the level of Single Controllers but if the same functionality
+needs to be achieved Globally then we have "CONTROLLER ADVICE"
+
+CONTROLLER ADVICE
+- EVERY REQUEST, EVERY CONTROLLER
+- HAVING SAID THAT YOU CAN STILL RESTRICT
+    - Certain type of controllers only @Controllers vs @RestController
+    - Certain packages (e.g. "com.landonhotel.controllers")
+    - Specific controllers (e.g. QuoteRequestController.class")
+
+//In the below example we have MENTIONED TWO CLASSES and this will be applied on both these classes
+@ControllerAdvice(assignableTypes = {QuoteRequestController.class, QuoteRequestManagementController.class})
+public class QuoteRequestManagementAdvice
+{
+      @InitBinder
+      public void initBinder(WebDataBinder binder)
+      {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        dateFormat.setLenient(false);
+
+      binder.registerCustomerEditor(Date.class, new CustomDateEditor(dateaFormat, false));
+      }
+}
+
+V - View -> HTML 
+View Options
+      - HTML
+      - JSP
+      - Angurlar
+      - React
+
+Spring + Thymeleaf
+
+View Resolver Configuration (Default)
+- viewClass = org.thymeleaf.spring5.view.ThymeleafViewResolver
+- prefix = /resources/templates/
+- suffix = .html
+
+-> When a controller returns "newQuote" then its translated to /resouces/templates/newQuote.html
+
+View resolvers
+InternalResouceViewResolver
+ResouceBundleViewResolver
+XmlViewResolver
+
+
+
+'''

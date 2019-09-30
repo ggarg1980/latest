@@ -1,0 +1,426 @@
+Spring boot Application -> There are lot of defaults set in the project. 
+In the Spring debug logs you have AUTO CONFIGURATION REPORT 
+which states are the defaults which are configured as part of the project.
+So dispatcher servlet and error configuration are automatically set. 
+There is something called 'Jackson' beans doing conversion from JSON to objects and similar stuff.
+
+HTTP:- GET / POST / DELETE
+200 - SUCCESS, 201 - CREATED SUCCESFULLY
+400 - BAD REQUEST -> In case of bad input request you can return 400 error and pass the message
+500 - Internal server error
+
+IF(HTTP_STATUS == 200)
+	SUCCESS THEN DO SOMTHING
+ELSE
+    CHECK HTTP ERROR and then do something 
+
+@SpringBootApplication
+@RestController
+@GetMapping
+@PathVariable
+@PostMapping
+@RequestBody
+@ResponseStatus(HttpStatus.NOT_FOUND)
+
+
+spring-cloud-starter-netflix-zuul ---> API Gateway (@EnableZuulProxy)
+spring-cloud-starter-netflix-eureka-client  <----> (EnableDiscoveryClient)
+spring-cloud-starter-netflix-eureka-server <---> @EnableEurekaServer
+-> Naming server --> Service Registration and Discovery
+
+spring-cloud-starter-openfeign --> Easy implmenation of Rest Clients (@EnableFeignClients
+spring-cloud-starter-netflix-ribbon -> Load balances (@EnableRibbonClient)
+spring-cloud-starter-netflix-hysterix -> Fault tolerance (@EnableHyterix)
+
+spring-cloud-starter-sleuth --> Unique Ids across request
+spring-cloud-sleuth-zipkin  --> Distributed tracing services with Zipkin
+spring-cloud-starter-bus-amqp --> Queue service
+spring-cloud-starter-config <---->spring-cloud-config-server --> Configuration management service wrt 
+to differnt envs usings Git
+
+spring-boot-starter-test
+spring-boot-starter-web
+spring-boot-starter-actuator
+spring-data-rest-hal-browser
+spring-boot-starter-data-jpa
+spring-boot-devtools
+
+@SpringBootApplication   <---------------------------------------------- Required to define its spring boot application 
+public class CurrencyExchangeServiceApplication {
+	public static void main(String[] args) {
+		SpringApplication.run(CurrencyExchangeServiceApplication.class, args);
+	}
+}
+
+@RestController <---------------------------------------------- Tell this is rest controller
+public class CurrencyExchangeController
+{
+	private Logger logger = LoggerFactory.getLogger(this.getClass());
+	@Autowired <----------------------------------------------
+	private Environment env;
+	
+	@Autowired <----------------------------------------------
+	private ExchangeValueRepository repository;
+	
+	@GetMapping("/currency-exchange/from/{from}/to/{to}") <----------------------------------------------
+	public ExchangeValue retrieveExchangeValue(@PathVariable String from, @PathVariable String to) <-------
+	{
+		ExchangeValue eV = repository.findByFromAndTo(from, to);
+		eV.setPort(Integer.parseInt(env.getProperty("local.server.port")));
+		logger.info("{}", eV);
+		return eV;
+	}
+  @PostMapping("/users") <----------------------------------------------
+  public void createUser(@RequestBody User user) <----------------------------------------------
+  {
+     User inputUser = Service.save(user);
+  }
+  
+@PostMapping("/users") <-------------------------------------
+public ResponseEntity<Object> createUser(@RequestBody User user) <------ All the data is coming in the User Object
+{
+     User inputUser = Service.save(user);
+     //CREATED
+     //user/{id}  savedUser.getId()
+     URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}") <----------- To retrun URI of the created object
+				.buildAndExpand(saveUser.getId()).toUri();
+     retun ResponseEntity.created(location).build(); <---- URL is requried in HEADER and RESPONSE IS 201
+}
+  
+}
+
+//EXCEPTION HANDING - returning appropriate statuses via HTTP
+
+@ResponseStatus(HttpStatus.NOT_FOUND)
+public class UserNotFoundException extends RuntimeException {
+	public UserNotFoundException (String message)
+	{
+		super(message);
+	}
+}
+
+================================= HATEOAS ===============================================
+You create a resouce and then put and links inside it.
+
+================================= Content Neogiation ===============================================
+
+Content Neogiation -> In the header you specify the format that you want the response in for example application/JSON 
+or application/xml in that scenerio you need modify the response from server. Jackson dataformat xml 
+
+================================= SWAGGER ===============================================
+Maven Dependencies -> Sringfox-swagger2 and Sringfox-swagger-ui
+
+@Configuration
+@EnableSwagger2
+public class SwaggerConfig
+{
+	@Bean
+	public Docket api()
+	{
+		return new Docket(DocumetationType.SWAGGER_2);
+	}
+}
+================================= MOINTIONING ===============================================
+spring-boot-starter-actuator (for monitoing)
+spring-data-rest-hal-browser (for viewinig)
+you can check health (whether application is up or not), you can check beans (which all beans are loaded),
+you can check auditevents, heapdump, threaddump, metrix (like memory, cpu etc), mapping 
+
+================================= Filterning properties ===============================================
+Static Bean filter
+public class TestBean
+{
+	@JsonIgnore
+	String prop1;
+	
+	String prop2;
+	
+}
+
+Dyanmic Bean filter:- Using MappingJacksonValue with filters you can do dynamic filtering
+https://www.udemy.com/microservices-with-spring-boot-and-spring-cloud/learn/v4/t/lecture/8005676?start=0
+
+================================= Versioning ===============================================
+1. One way to version is to create two differnt URIs for the call
+2. params -> Request Params 
+@GetMapping(value="/person/param", params="version=2")
+public method2(){}
+@GetMapping(value="/person/param", params="version=1")
+public method1() {}
+URL -> http://..../person/param?version=1
+
+3. params -> In the Header
+@GetMapping(value="/person/param", headers="X-API-VERSION=2")
+public method2(){}
+@GetMapping(value="/person/param", params="X-API-VERSION=1")
+public method1() {}
+URL -> http://..../person/param (NOW PARAMETER NEEDS TO BE SET INTO HEADER)
+
+================================= BASIC SECURITY ===============================================
+Maven Dependency -> spring-boot-starter-security ->
+Basic Auth - Password is printed in the logs and the client needs to set the security parameters as 
+Username - Usernamme
+Passowrd - Password
+These can be configured in the server in the application.properties
+security.user.name = username
+security.user.password = password
+
+================================= Basic JPA  ===============================================
+spring-boot-starter-data-jpa
+
+
+
+=======================Richardson Maturity Model=======================
+Level - 0 -> Expose webservices in REST Style
+	http://server/getPosts
+	http://server/deletePosts
+	http://server/doThis
+Level - 1 -> Expose resouces with proper URI (improper use of HTTP Methods)
+	http://server/accounts
+	http://server/accounts/10
+Level - 2 -> LEVEL 1 + Proper use of HTTP Methods
+	GET - http://server/accounts
+	DELETE - http://server/accounts/10
+Level - 3 -> LEVEL 2 + HATEOAS (What are next possible sections)
+
+================================Micro-services================================
+Small Autonomous services which are created to resolve the business domain problem
+(often have HTTP as the underlying protocol).
+-REST
+-Small well chosen Deployable Units
+-Cloud Enabled
+
+Benefits:- FMG II
+1. Fault Isolation
+2. Mixed Technology Stack
+3. Grangular Scalability 
+4. Independent development
+5. Independent deployment
+
+Challanges
+1. Complex Archiecture 
+2. Debugging problems
+3. Fault tolrance should be handled correclty 
+
+=========================JPA===========================
+spring-boot-starter-data-jpa
+
+findAll()
+findById(id)
+deleteById(id)
+save(user)
+
+public interface ExchangeValueREpository extends JpaRepository<ExchangeValue, Long>
+{
+    ExchangeValue findByFromAndTo(String from, String to);
+    ExchangeValue findByFrom(String from);
+
+}
+	
+Currently Exchange Service 
+localhost:8000/currency-exchange/from/USD/to/INR
+localhost:8001/currency-exchange/from/USD/to/INR
+
+Currently Covertner service 
+localhost:8100/currency-coverter/from/{from}/to/{to}/quantity/{quantity}
+
+
+localhost:8100/currency-coverter/from/{from}/to/{to}/quantity/{quantity}
+
+======= Calling RestTemplate to call another service ========
+
+// from and to are coming as method arguments
+
+public CurrencyConversionBean convertCurrency(@PathVariable String from, @PathVariable String to, 
+									 @PathVariable BigDecimal quantity)
+{
+	Map<String, String> uriVariables = new HashMap<>();
+	uriVariables.put("from", from);
+	uriVariables.put("to", to);
+
+	ResponseEntity<CurrencyConversionBean> responseEntity = new RestTemplate().
+						getForEntity("http://localhost:8000/currency-exchnage/from/{from}/to/{to}",
+						CurrencyConversionBean.class, uriVariables);
+	CurrencyConversionBean respone = responseEntity.getBody();
+}
+
+======= Feign ======== Feign is the rest service client, easy to call resful webservices 
+1. Include the deplendecy in the maven project -> spring-cloud-starter-openfeign
+2. @EnableFeignClients(""a.b.c.d"")  // THis is at the appplication level, same as that of 
+3. Step 3 create an interface which will call the service (proxy)
+
+	========================================
+	package a.b.c.d;
+
+	@SpringBootApplication
+	@EnableFeignClients("a.b.c.d") //Scan the packages 
+	public class SpringBoot 
+	{
+
+	}
+	
+	
+	========================================
+
+	@FeignClient(name="currency-exchange-service", url="localhost:8000")
+	public interface CurrencyExchangeServiceProxy 
+	{
+
+	@GetMapping("/currency-exchange/from/{from}/to/{to}")
+	public CurrencyConversionBean retrieveExchangeValues(@PathVariable("from") String from, 
+									@PathVariable("to") String to};
+
+	}
+	========================================
+	@Autowired
+	CurrencyExchangeServiceProxy proxy;
+	public CurrencyConversionBean convertCurrencyFeign(@PathVariable String from, @PathVariable String to, 
+										 @PathVariable BigDecimal quantity)
+	{
+		CurrencyConversionBean respone = proxy.retrieveExchangeValues(from, to);
+	}
+
+======= Ribbon ======== Ribbon is client side loadbalancer
+1. Include the dependecny -> spring-cloud-starter-netflix-ribbon -> Load balances
+2. Enable Ribbon Client
+3. Specify the URL in the application.properties -> <<Name_of_service>>.ribbon.listOfServers
+for example currency-exchange-service.ribbon.listOfservers=http://localhost:8000, http://localhost:8001
+	========================================
+
+	//@FeignClient(name="currency-exchange-service", url="localhost:8000")
+	@FeignClient(name="currency-exchange-service") -> name parameter is not used 
+	@RibbonClient(name="currency-exchange-service") -> name parameter is used to pick the properties from application.properties
+	                                                -> So we have http://localhost:8000/GetMapping (As below)
+							-> we have http://localhost:8000/currency-exchange/from/{from}/to/{to}
+	public interface CurrencyExchangeServiceProxy 
+	{
+
+	@GetMapping("/currency-exchange/from/{from}/to/{to}")
+	public CurrencyConversionBean retrieveExchangeValues(@PathVariable("from") String from, @PathVariable("to") String to};
+
+	}
+	========================================
+
+======= Eureka Naming Service ======== 
+-> When ever a service is coming up, it will register itself with the name server (Service Registration)
+-> When a micro-service wants to talk with another service it will talk with naming service (Service Discovery)
+spring-cloud-starter-netflix-eureka-client  <----> spring-cloud-starter-netflix-eureka-server 
+-> Naming server --> Service Registration and Discovery
+1. Include the dependecy from Spring Boot website - Eureka Server
+2. Then enable @EnableEurekaServer
+//Server side configuration
+	========================================
+	package a.b.c.d;
+
+	@SpringBootApplication
+	@EnableEurekaServer
+	public class SpringBoot 
+	{
+
+	}
+//Client side configuration
+	========================================
+	package a.b.c.d;
+
+	@SpringBootApplication
+	@EnableFeignClients("a.b.c.d") //Scan the packages 
+	@EnableDiscoveryClient
+	public class SpringBoot 
+	{
+
+	}
+	Application properites:-
+	eureka.client.service-url.default-zone=http://localhost:8761/eureka
+
+=========================== API Gateway (Zuul) ======================
+Features
+	Authetication, authorization & security
+	Rate Limits
+	Fault Tolernace
+	Service Aggregation
+1. Dependecny is Zuul and Eureka Discovery to talk with Naming server
+
+
+//Server side configuration
+	========================================
+	package a.b.c.d;
+
+	@SpringBootApplication
+	@EnableZuulProxy
+	@EnableDiscoveryClient 
+	public class SpringBoot 
+	{
+
+	}
+
+Implementation Zuul Filtering
+		@Component
+		public class ZuulLoggingFilter extends ZuulFilter
+		{
+
+		public int filterOrder() //In case if you have multiple filters
+		// it tells which should be executed first  and which shoudl be executed last
+		{
+			return 1;
+		}
+
+		public boolean shouldFilter()
+		{ //based on some business logic you can tell whether this filter should execute or not
+		 return true;
+		}
+
+		public String filterType()
+		{
+		  return "pre"; (valid pre/post/error before the request or after the request or only filter error request)
+		}
+
+		public Object run()
+		{
+		HttpServletRequest request = RequestContext.getCurrentContext().getRequest();
+		logger.info(" requst", request, request.getRequestURI());
+		return null
+		}
+
+		}
+====================================================DISTRIBUTED TRACING==========================================================
+Sleuth, Zipkin, Rabbit MQ
+1. spring-cloud-starter-sleuth &  
+	spring-cloud-sleuth-zipkin &  
+			spring-cloud-starter-bus-amqp
+2. Add @Bean for Sampling for example 
+
+//Client side configuration
+	========================================
+	package a.b.c.d;
+
+	@SpringBootApplication
+	@EnableDiscoveryClient
+	public class SpringBoot 
+	{
+		@Bean
+		public Sampler defaultSampler()
+		{
+			return Sampler.ALWAYS_SAMPLER;		
+		}
+	}
+
+Zipkin - download the JAR and run the server (
+1. SET RABBIT_URI=ampq://localhost (This tells the zipkin server where to connect from Rabbit MQ)
+2. java -jar zipkin-server-2.5.2-exec.jar
+
+==============HYTRIX - FAULT TOLERANE================================================
+
+@EnableHytrix (Same level of @SprintBootApplication) - in the main applciation 
+
+@GetMapping("/fault-tolerance-example")
+@HystrixCommad(fallbackMethod="fallbackRetrieveConfiguration")
+public LimitConfiguration retrieveConfiguration()
+{
+   // some exception
+}
+
+public LimitConfiguration fallbackRetrieveConfiguration()
+{
+   return new LimitConfiguration();
+}
+
