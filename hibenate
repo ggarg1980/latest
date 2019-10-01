@@ -55,6 +55,15 @@ Step 3. #######
             
   FETCH STATERGY (LAZY initaztion -> Get only first level data and EAGER intization -> Get all the data in single go)
   You are returned a proxy object 
+  
+  Example:- 
+  
+  public class User
+  {
+         @ElementCollection(fetch=FetchType.EAGER/fetch=FetchType.LAZY)
+         @JoinTable(name="USER_ADDRESS", joinColumns=@JoinColumn(name="USER_ID")
+         private Collections<Address> listOfAddresses = new ArrayList<Address>();  
+  }
   ################################################# ONE TO ONE MAPPING #################################################
   @Entity
   public class Vehicle
