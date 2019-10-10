@@ -1,0 +1,53 @@
+https://learning.oreilly.com/learning-paths/learning-path-aws/9780135944769/9780135229415-ACSA_01_01_10
+
+URLs
+https://aws.amazon.com/certification/certified-solutions-architect-associate/
+https://d1.awsstatic.com/training-and-certification/docs-sa-assoc/AWS_Certified_Solutions_Architect_Associate-Exam_Guide_EN_1.8.pdf
+https://aws.amazon.com/whitepapers/?whitepapers-main.sort-by=item.additionalFields.sortDate&whitepapers-main.sort-order=desc&whitepapers-main.q=best%2Bpractices&whitepapers-main.q_operator=AND
+
+https://aws.amazon.com/architecture/well-architected/
+https://aws.amazon.com/training/self-paced-labs/
+
+Best Practices
+======================================
+- Enable Scalability 
+- Disposable resources instead of fixed servers
+- Leverage automation
+- Loose coupling (Queues, Load balances, SNS)
+-  Services, not servers
+- Choose the right database
+- Avoid single points of failure
+- Optimize for cost
+- Leverage caching
+- Security in layers 
+======================================
+Five pillars 
+- Reliabilty
+- Performacne efficiency
+- Security
+- Cost optimization
+- Operational Excellence 
+
+
+Reliabilty
+- VPC 
+- Direct Connect
+- EC2
+- Route 53
+- ELB
+- CloudWatch
+- S3
+- Glacier
+
+Performance
+- Auto Scaling
+- Elastic Block Store
+- Elastic File System
+- VPC
+- Elastic container service - ECS
+- CloudWatch 
+- RDS
+- DynamoDB (NoSQL)
+
+
+
