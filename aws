@@ -49,5 +49,63 @@ Performance
 - RDS
 - DynamoDB (NoSQL)
 
+Security
+IAM
+IAM Instance Profiles and Roles
+AWS Organizations
+AWS Security Token Service (STS)
+AWS Config
+Amazon CloudWatch Logs
+Amazon Elasticserach Service
+Amazon VPC Security Groups
+Amazon Key managment Service (KMS)
+
+Cost Optimization
+Amazon CloudWatch
+AWS Trusted Advisor
+Reserved Instances
+Spot Instances
+AWS CloudFormation
+Cost Explorer
+Billing Alerts
+
+Operation Excellence 
+AWS CloudFormation
+AWS CodeCommit
+AWS CodePipeline
+AWS Lambda
+AWS Config
+AWS CloudWatch
+AWS CloudWatch Logs
+Simple Notification Service SNS
+Amazon Athena (to query logs from S3)
+
+Relaibility
+99.9 -> 8.76 hours downtime (3 nines)
+99.99 -> 52.56 min downtime (4 nines)
+99.999 -> 5.26 mins downtime (5 nines)
+
+Higher availablity -> higher cost and complexility 
+- Single point of failure -> SPOF
+-Lack of 
+--> Automation
+--> Elasticity
+--> Instumenation 
+- Performance 
+- Locally stored state
+
+Mean Time Bewteen Failure -> MTBF
+Mean Time to Recover -> MTTR
+
+-- Fault isolation zones (AZ & Regions)
+-- Redundancy 
+-- Microservice arch
+-- Recovery Oriented Computing
+-- Distributed system best practices
+-- Avoid single point of failure
+-- Automate everything
+-- Scale when needed
+-- Monitor Everything
+-- Build stateless application
 
 
